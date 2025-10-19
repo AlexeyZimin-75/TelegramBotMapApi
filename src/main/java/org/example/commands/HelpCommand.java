@@ -1,6 +1,7 @@
-package org.example.commnads;
+package org.example.commands;
 
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -28,15 +29,15 @@ public class HelpCommand implements Command {
     }
 
     @Override
-    public void execute(AbsSender absSender, Message message) {
+    public SendMessage execute(AbsSender absSender, Message message) {
         SendMessage response = new SendMessage();
         response.setChatId(message.getChatId().toString());
 
-
+        // Создаем текст справки
         StringBuilder helpText = new StringBuilder();
         helpText.append("📚 Доступные команды:\n\n");
 
-
+        // Проходим по всем командам и добавляем их в справку
         for (Command command : commands.values()) {
             helpText.append("/")
                     .append(command.getCommandName())
@@ -45,7 +46,9 @@ public class HelpCommand implements Command {
                     .append("\n");
         }
 
-        helpText.append("\nВыбери команду и отправь её боту!");
+        helpText.append("\nБот помогает построить маршрут до заданного города," +
+                " для начала вам следует отправить геолокацию, затем выполняйте последующие команды" +
+                "бота, удачного использования");
         response.setText(helpText.toString());
 
         try {
@@ -53,5 +56,6 @@ public class HelpCommand implements Command {
         } catch (TelegramApiException e) {
             System.err.println("Ошибка отправки справки: " + e.getMessage());
         }
+        return response;
     }
 }
