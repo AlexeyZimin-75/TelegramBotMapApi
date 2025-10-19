@@ -15,6 +15,7 @@ public class YandexMapsClient {
     private final String suggestApiKey;
     private final HttpClient client;
 
+    //Клиент для работы с API Яндекса
     public YandexMapsClient() {
         Properties properties = new Properties();
 
@@ -29,7 +30,7 @@ public class YandexMapsClient {
             this.suggestApiKey = properties.getProperty("yandex-api.geosuggest.token");
 
             if (this.geocodeApiKey == null || this.suggestApiKey == null) {
-                throw new RuntimeException("API ключи не найдены в application.properties");
+                throw new RuntimeException("API ключи не найдены в config.properties");
             }
 
         } catch (IOException e) {
@@ -39,8 +40,8 @@ public class YandexMapsClient {
         this.client = HttpClient.newBuilder().build();
     }
 
+    //Метод для поиска достопримечательностей по городу
     public String getLandmarks(String city) throws IOException, InterruptedException, URISyntaxException {
-
         String text = "Достопримечательности " + city;
 
         URI uri = new URI(
@@ -66,13 +67,40 @@ public class YandexMapsClient {
         return JsonExtractor.extractLandmarkTexts(resp.body());
     }
 
+    //Метод для поиска города по координатам
     public String getCityName(double latitude,double longitude) throws IOException, InterruptedException, URISyntaxException {
 
         URI uri = new URI(
                 "https",
                 "geocode-maps.yandex.ru",
                 "/v1/",
-                "apikey=" + this.geocodeApiKey+ "&geocode=" + String.valueOf(latitude) + "," +  String.valueOf(longitude) +"&kind=locality" + "&results=5&format=json",
+                "apikey=" + this.geocodeApiKey+ "&geocode=" + latitude + "," + longitude +"&kind=locality" + "&results=5&format=json",
+                null
+        );
+
+        HttpRequest req = HttpRequest.newBuilder()
+                .uri(uri)
+                .header("Accept", "application/json")
+                .GET()
+                .build();
+
+        HttpResponse<String> resp = client.send(req, HttpResponse.BodyHandlers.ofString());
+
+        if (resp.statusCode() != 200) {
+            throw new RuntimeException("Failed to fetch landmarks: " + resp.statusCode());
+        }
+
+        return JsonExtractor.extractFormattedAddress(resp.body());
+    }
+
+    //Метод для поиска города по его названия
+    public String getCityName(String cityName) throws IOException, InterruptedException, URISyntaxException {
+
+        URI uri = new URI(
+                "https",
+                "geocode-maps.yandex.ru",
+                "/v1/",
+                "apikey=" + this.geocodeApiKey+ "&geocode=" + cityName +"&kind=locality" + "&results=5&format=json",
                 null
         );
 

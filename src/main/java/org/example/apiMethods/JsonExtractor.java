@@ -9,6 +9,8 @@ public class JsonExtractor {
     private JsonExtractor() {
     }
 
+    //Метод для получения достопримечательностей
+    //Вычисляет есть ли в tags "landmark" и если есть, то добавляет этот объект
     public static String extractLandmarkTexts(String json) {
         if (json == null || json.isBlank()) {
             return "";
@@ -54,19 +56,8 @@ public class JsonExtractor {
         return out.toString();
     }
 
-    private static boolean containsTag(JsonArray tags, String needleLowerCase) {
-        for (JsonElement t : tags) {
-            if (t.isJsonPrimitive()) {
-                String v = t.getAsJsonPrimitive().getAsString();
-                if (v != null && v.equalsIgnoreCase(needleLowerCase)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
 
-
+    //Метод для получения города из координат
     public static String extractFormattedAddress(String json) {
         if (json == null || json.isBlank()) return "";
         JsonElement rootEl;
@@ -75,6 +66,7 @@ public class JsonExtractor {
         } catch (Exception ex) {
             return "";
         }
+
         if (!rootEl.isJsonObject()) return "";
         JsonObject root = rootEl.getAsJsonObject();
 
@@ -101,6 +93,20 @@ public class JsonExtractor {
         if (!addressLine.isBlank()) return addressLine;
 
         return "";
+    }
+
+
+    //Вспомогательные методы для работы с JSON'ами
+    private static boolean containsTag(JsonArray tags, String needleLowerCase) {
+        for (JsonElement t : tags) {
+            if (t.isJsonPrimitive()) {
+                String v = t.getAsJsonPrimitive().getAsString();
+                if (v != null && v.equalsIgnoreCase(needleLowerCase)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private static JsonObject getObj(JsonObject parent, String key) {
