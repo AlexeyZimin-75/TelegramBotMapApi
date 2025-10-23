@@ -1,10 +1,12 @@
 package org.example;
 
+import org.example.keyboards.LastKeyboard;
 import org.example.keyboards.LocationKeyboard;
 import org.example.commands.HelpCommand;
 import org.example.commands.StartCommand;
 import org.example.commands.Command;
 import org.example.commands.GetLocationCommand;
+import org.example.keyboards.StartKeyboard;
 import org.example.service.UserStateService;
 import org.example.states.UserState;
 
@@ -13,11 +15,15 @@ import org.telegram.telegrambots.meta.api.objects.Location;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.LongAccumulator;
 
 import static org.example.states.UserState.*;
 
@@ -26,19 +32,27 @@ public class MessageHandler {
     private final Map<String, Command> commands = new HashMap<>();
     private final UserStateService userStateService = new UserStateService();
     private final GetLocationCommand getLocationCommand = new GetLocationCommand(userStateService);
+    private final Map<String,String> allCommandsTriggers = new HashMap<>();
+
 
     public MessageHandler() {
         registerCommands();
     }
 
     private void registerCommands() {
-        Command startCommand = new StartCommand(userStateService);
+        StartCommand startCommand = new StartCommand(userStateService);
         commands.put(startCommand.getCommandName(), startCommand);
 
-        Command helpCommand = new HelpCommand(commands);
+
+        HelpCommand helpCommand = new HelpCommand(commands);
         commands.put(helpCommand.getCommandName(), helpCommand);
 
+
         commands.put(getLocationCommand.getCommandName(), getLocationCommand);
+
+        allCommandsTriggers.putAll(getLocationCommand.getLocationTriggers());
+        allCommandsTriggers.putAll(helpCommand.getHelpTriggers());
+        allCommandsTriggers.putAll(startCommand.getStartTriggers());
 
         System.out.println("Зарегистрированы команды: " + commands.keySet());
     }
@@ -183,9 +197,11 @@ public class MessageHandler {
                         currentCity, text, text, landmarks
                 );
 
+                ReplyKeyboardMarkup replyKeyboardMarkup = new LastKeyboard().createStartKeyboard();
                 SendMessage response = new SendMessage();
                 response.setChatId(message.getChatId().toString());
                 response.setText(routeInfo);
+                response.setReplyMarkup(replyKeyboardMarkup);
                 absSender.execute(response);
             } catch (Exception e) {
                 System.err.println("❌ Ошибка при получении достопримечательностей: " + e.getMessage());
@@ -197,8 +213,10 @@ public class MessageHandler {
                 );
 
                 SendMessage response = new SendMessage();
+                ReplyKeyboardMarkup replyKeyboardMarkup = new LastKeyboard().createStartKeyboard();
                 response.setChatId(message.getChatId().toString());
                 response.setText(routeInfo);
+                response.setReplyMarkup(replyKeyboardMarkup);
 
                 try {
                     absSender.execute(response);
@@ -214,6 +232,12 @@ public class MessageHandler {
         String text = message.getText();
         User user = message.getFrom();
         Long userId = user.getId();
+
+        for(Map.Entry<String,String> entry : allCommandsTriggers.entrySet()){
+            if(entry.getKey().equals(text)){
+                text = entry.getValue();
+            }
+        }
 
         if (text.startsWith("/")) {
             String commandName = text.substring(1).toLowerCase();

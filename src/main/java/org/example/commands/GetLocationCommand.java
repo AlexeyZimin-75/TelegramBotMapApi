@@ -10,16 +10,30 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 
 public class GetLocationCommand implements Command {
 
     private final UserStateService userStateService;
     private final YandexMapsClient yandexMapsClient;
+    private Map<String,String> locationTriggers;
+
+
+
 
     public GetLocationCommand(UserStateService userStateService) {
         this.userStateService = userStateService;
         this.yandexMapsClient = new YandexMapsClient();
+        this.locationTriggers = new HashMap<>();
+        locationTriggers.put("\uD83C\uDF0D Проложить маршрут","/location");
+        //locationTriggers.put("🗺️ Создать новый маршрут 🏛️","/location");
     }
+
+
 
     @Override
     public String getCommandName() {
@@ -55,6 +69,11 @@ public class GetLocationCommand implements Command {
 
         return sendMessage;
     }
+
+    public Map<String, String> getLocationTriggers() {
+        return locationTriggers;
+    }
+
 
 
     public String getCityFromCoordinates(double latitude, double longitude) throws Exception {
