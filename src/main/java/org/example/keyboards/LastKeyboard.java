@@ -6,23 +6,29 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import java.util.ArrayList;
 import java.util.List;
 
-public class LocationKeyboard {
-    public ReplyKeyboardMarkup createLocationKeyboard() {
+public class LastKeyboard {
+    public ReplyKeyboardMarkup createStartKeyboard() {
         ReplyKeyboardMarkup keyboard = new ReplyKeyboardMarkup();
         keyboard.setResizeKeyboard(true);
-        keyboard.setOneTimeKeyboard(true);
 
+        keyboard.setOneTimeKeyboard(true);
+        keyboard.setSelective(true);
 
         List<KeyboardRow> buttons = new ArrayList<>();
-        KeyboardButton autoLocationButton = new KeyboardButton("📍 Отправить локацию");
-        autoLocationButton.setRequestLocation(true);
-        KeyboardButton manuallyLocationButton = new KeyboardButton("\uD83D\uDC49 ввести город вручную");
-        KeyboardRow row1 = new KeyboardRow();
-        row1.add(autoLocationButton);
+        KeyboardButton startLocationButton = new KeyboardButton("🗺️ Построить новый маршрут");
+        KeyboardButton getHelpButton = new KeyboardButton("🤖 Что умеет наш бот");
+
+
+
         KeyboardRow row2 = new KeyboardRow();
-        row2.add(manuallyLocationButton);
-        buttons.add(row1);
+        row2.add(startLocationButton);
         buttons.add(row2);
+
+        KeyboardRow row3 = new KeyboardRow();
+        row3.add(getHelpButton);
+        buttons.add(row3);
+
+
         keyboard.setKeyboard(buttons);
         return keyboard;
     }
