@@ -87,13 +87,19 @@ public class YandexMapsClient {
         HttpResponse<String> resp = client.send(req, HttpResponse.BodyHandlers.ofString());
 
         if (resp.statusCode() != 200) {
-            throw new RuntimeException("Failed to fetch landmarks: " + resp.statusCode());
+            throw new RuntimeException("Failed to fetch city: " + resp.statusCode());
         }
 
-        return JsonExtractor.extractFormattedAddress(resp.body());
+        String city = JsonExtractor.extractFormattedAddress(resp.body());
+
+        if (city.isBlank()) {
+            throw new RuntimeException("Failed to find city");
+        }
+
+        return city;
     }
 
-    //Метод для поиска города по его названия
+    //Метод для поиска города по его названию
     public String getCityName(String cityName) throws IOException, InterruptedException, URISyntaxException {
 
         URI uri = new URI(
@@ -113,7 +119,13 @@ public class YandexMapsClient {
         HttpResponse<String> resp = client.send(req, HttpResponse.BodyHandlers.ofString());
 
         if (resp.statusCode() != 200) {
-            throw new RuntimeException("Failed to fetch landmarks: " + resp.statusCode());
+            throw new RuntimeException("Failed to fetch city: " + resp.statusCode());
+        }
+
+        String city = JsonExtractor.extractFormattedAddress(resp.body());
+
+        if (city.isBlank()) {
+            throw new RuntimeException("Failed to find city");
         }
 
         return JsonExtractor.extractFormattedAddress(resp.body());

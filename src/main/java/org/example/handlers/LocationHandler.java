@@ -1,5 +1,6 @@
 package org.example.handlers;
 
+
 import org.example.commands.GetLocationCommand;
 import org.example.service.UserStateService;
 import org.example.states.UserState;
@@ -52,7 +53,9 @@ public class LocationHandler {
 
     private void handleTextCityInput(Long userId, Long chatId, String cityName, AbsSender absSender) {
         try {
-            // Здесь должна быть проверка существования города через API
+
+            //TODO добавить проверку на вводимый город
+
             handleSuccessfulCityDetection(userId, chatId, cityName, absSender);
         } catch (Exception e) {
             handleCityInputError(chatId, absSender);
