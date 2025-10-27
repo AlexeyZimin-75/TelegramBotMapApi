@@ -87,6 +87,9 @@ public class MessageProcessor {
             case AWAITING_DESTINATION_CITY:
                 routeHandler.handleDestinationCity(message, absSender);
                 break;
+            case AWAITING_DATE_RESPONSE:
+                dateHanlder.handleDate(message, absSender);
+                break;
             default:
                 // Для других состояний или когда состояние не установлено
                 handleDefaultMessage(message, absSender);
