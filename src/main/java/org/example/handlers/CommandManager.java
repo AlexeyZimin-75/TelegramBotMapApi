@@ -48,4 +48,8 @@ public class CommandManager {
     public Map<String, Command> getCommands() {
         return new HashMap<>(commands);
     }
+
+    public Map<String, String> getCommandTriggers() {
+        return commandTriggers;
+    }
 }
