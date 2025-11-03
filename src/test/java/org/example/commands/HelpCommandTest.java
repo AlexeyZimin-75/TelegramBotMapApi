@@ -1,7 +1,5 @@
 package org.example.commands;
 
-import org.example.MessageHandler;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;

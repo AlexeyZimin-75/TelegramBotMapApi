@@ -1,5 +1,7 @@
 package org.example;
 
+import org.example.handlers.MessageProcessor;
+import org.example.service.UserStateService;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -7,14 +9,14 @@ import java.io.InputStream;
 import java.util.Properties;
 
 public class Bot extends TelegramLongPollingBot {
-    private final MessageHandler messageHandler;
+    private final MessageProcessor messageProcessor;
     private final String BOT_TOKEN;
     private final String BOT_USERNAME;
 
     public Bot() {
         this.BOT_TOKEN = loadTokenFromConfig();
         this.BOT_USERNAME = loadUsernameFromConfig();
-        this.messageHandler = new MessageHandler();
+        this.messageProcessor = new MessageProcessor(new UserStateService());
     }
 
     private static String loadTokenFromConfig() {
@@ -41,12 +43,7 @@ public class Bot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        if(update.hasMessage() && update.getMessage().hasLocation()){
-            messageHandler.handleLocation(update,this);
-        }
-        else if (update.hasMessage() && update.getMessage().hasText()) {
-            messageHandler.handleMessage(update.getMessage(), this);
-        }
+        messageProcessor.processUpdate(update, this);
     }
 
     @Override
