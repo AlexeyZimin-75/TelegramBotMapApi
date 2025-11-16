@@ -1,6 +1,7 @@
 package org.example.commands;
 
 import org.example.handlers.CommandManager;
+import org.example.service.UserDataService;
 import org.example.service.UserStateService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,7 +18,8 @@ import static org.mockito.Mockito.when;
 
 class HelpCommandTest {
     UserStateService userStateService = new UserStateService();
-    CommandManager handler = new CommandManager(userStateService);
+    UserDataService userDataService = new UserDataService();
+    CommandManager handler = new CommandManager(userStateService,userDataService);
     HelpCommand helpCommand = new HelpCommand(handler.getCommands());
 
 

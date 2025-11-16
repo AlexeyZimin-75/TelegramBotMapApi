@@ -1,7 +1,8 @@
 package org.example.commands;
 
-import org.example.apiMethods.YandexMapsClient;
 import org.example.keyboards.LocationKeyboard;
+import org.example.apiMethods.YandexMapsClient;
+import org.example.service.UserDataService;
 import org.example.service.UserStateService;
 import org.example.states.UserState;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -22,7 +23,7 @@ public class GetLocationCommand implements Command {
 
 
 
-    public GetLocationCommand(UserStateService userStateService) {
+    public GetLocationCommand(UserStateService userStateService, UserDataService userDataService) {
         this.userStateService = userStateService;
         this.yandexMapsClient = new YandexMapsClient();
         this.locationTriggers = new HashMap<>();

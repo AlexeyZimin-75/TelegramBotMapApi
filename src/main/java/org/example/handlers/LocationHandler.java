@@ -2,6 +2,8 @@ package org.example.handlers;
 
 import org.example.commands.GetLocationCommand;
 import org.example.service.UserStateService;
+import org.example.service.UserDataService;
+import org.example.service.UserData;
 import org.example.states.UserState;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Location;
@@ -10,11 +12,13 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 public class LocationHandler {
     private final UserStateService userStateService;
+    private final UserDataService userDataService;
     private final GetLocationCommand getLocationCommand;
 
-    public LocationHandler(UserStateService userStateService) {
+    public LocationHandler(UserStateService userStateService, UserDataService userDataService) {
         this.userStateService = userStateService;
-        this.getLocationCommand = new GetLocationCommand(userStateService);
+        this.userDataService = userDataService;
+        this.getLocationCommand = new GetLocationCommand(userStateService, userDataService);
     }
 
     public void handleLocation(Long userId, Long chatId, Location location, AbsSender absSender) {
@@ -60,7 +64,12 @@ public class LocationHandler {
     }
 
     private void handleSuccessfulCityDetection(Long userId, Long chatId, String city, AbsSender absSender) {
-        userStateService.getUserData(userId).setCurrentCity(city);
+        // Сохраняем город в UserData
+        UserData userData = userDataService.getUserData(userId);
+        userData.setCurrentCity(city);
+
+        System.out.println("📍 Сохранен текущий город: " + city + " для пользователя: " + userId);
+
         userStateService.setUserState(userId, UserState.AWAITING_DESTINATION_CITY);
 
         String message = "📍 Отлично! Ваш город: " + city +

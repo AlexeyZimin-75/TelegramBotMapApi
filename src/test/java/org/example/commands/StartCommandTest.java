@@ -1,5 +1,6 @@
 package org.example.commands;
 
+import org.example.service.UserDataService;
 import org.example.service.UserStateService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,11 +34,11 @@ class StartCommandTest {
     private User user;
 
     @Mock
-    private Chat chat;
+    private UserDataService userDataService;
 
     @BeforeEach
     void setUp(){
-        command = new StartCommand(userStateService);
+        command = new StartCommand(userStateService,userDataService);
     }
 
 
