@@ -3,7 +3,8 @@ package org.example.service;
 public class UserData {
     private String currentCity;
     private String destinationCity;
-    private String dateOfTravel;
+    private String departureDate;
+    private String arrivalDate;
 
     public String getCurrentCity() { return currentCity; }
     public void setCurrentCity(String currentCity) { this.currentCity = currentCity; }
@@ -11,6 +12,9 @@ public class UserData {
     public String getDestinationCity() { return destinationCity; }
     public void setDestinationCity(String destinationCity) { this.destinationCity = destinationCity; }
 
-    public String getDateOfTravel() { return dateOfTravel; }
-    public void setDateOfTravel(String dateOfTravel) {this.dateOfTravel = dateOfTravel;}
+    public String getDepartureDate() { return departureDate; }
+    public void setDepartureDate(String departureDate) {this.departureDate = departureDate;}
+
+    public String getArrivalDate() { return arrivalDate; }
+    public void setArrivalDate(String arrivalDate) {this.arrivalDate = arrivalDate;}
 }

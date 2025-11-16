@@ -2,17 +2,15 @@ package org.example.commands;
 
 import org.example.keyboards.LocationKeyboard;
 import org.example.apiMethods.YandexMapsClient;
+import org.example.service.UserDataService;
 import org.example.service.UserStateService;
 import org.example.states.UserState;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
@@ -25,7 +23,7 @@ public class GetLocationCommand implements Command {
 
 
 
-    public GetLocationCommand(UserStateService userStateService) {
+    public GetLocationCommand(UserStateService userStateService, UserDataService userDataService) {
         this.userStateService = userStateService;
         this.yandexMapsClient = new YandexMapsClient();
         this.locationTriggers = new HashMap<>();
