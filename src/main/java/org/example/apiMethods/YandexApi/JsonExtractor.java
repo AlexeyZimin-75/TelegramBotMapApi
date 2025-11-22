@@ -1,4 +1,4 @@
-package org.example.apiMethods;
+package org.example.apiMethods.YandexApi;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
