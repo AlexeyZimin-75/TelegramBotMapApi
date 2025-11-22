@@ -1,6 +1,7 @@
 package org.example.commands;
 
 import org.example.apiMethods.YandexMapsClient;
+import org.example.service.UserDataService;
 import org.example.service.UserStateService;
 import org.example.states.UserState;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,13 +38,16 @@ class GetLocationCommandTest {
     private SendMessage sendMessage;
 
     @Mock
+    private UserDataService userDataService;
+
+    @Mock
     private User user;
 
 
     @BeforeEach
     void setUp(){
         MockitoAnnotations.openMocks(this);
-        command = new GetLocationCommand(userStateService);
+        command = new GetLocationCommand(userStateService,userDataService);
     }
 
     @Test

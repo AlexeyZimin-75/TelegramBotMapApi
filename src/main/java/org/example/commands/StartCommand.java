@@ -11,6 +11,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
+import org.example.service.UserDataService;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
@@ -22,10 +23,12 @@ import java.util.Map;
  */
 public class StartCommand implements Command {
     private final UserStateService userStateService;
+    private final UserDataService userDataService;
     private  Map<String,String> startTriggers;
 
-    public StartCommand(UserStateService userStateService) {
+    public StartCommand(UserStateService userStateService, UserDataService userDataService) {
         this.userStateService = userStateService;
+        this.userDataService = userDataService;
         startTriggers = new HashMap<>();
         startTriggers.put("🗺️ Построить новый маршрут","/start");
     }

@@ -1,5 +1,6 @@
 package org.example.handlers;
 
+import org.example.service.UserDataService;
 import org.example.commands.Command;
 import org.example.service.UserStateService;
 import org.example.states.UserState;
@@ -14,12 +15,16 @@ public class MessageProcessor {
     private final LocationHandler locationHandler;
     private final RouteHandler routeHandler;
     private final UserStateService userStateService;
+    private final DateHandler dateHandler;
+    private final UserDataService userDataService;// Добавляем единый экземпляр
 
     public MessageProcessor(UserStateService userStateService) {
         this.userStateService = userStateService;
-        this.commandManager = new CommandManager(userStateService);
-        this.locationHandler = new LocationHandler(userStateService);
-        this.routeHandler = new RouteHandler(userStateService);
+        this.userDataService = new UserDataService();
+        this.commandManager = new CommandManager(userStateService, userDataService);
+        this.locationHandler = new LocationHandler(userStateService, userDataService);
+        this.routeHandler = new RouteHandler(userStateService, userDataService);
+        this.dateHandler = new DateHandler(userStateService, userDataService);
     }
 
     public void processUpdate(Update update, AbsSender absSender) {
@@ -86,6 +91,12 @@ public class MessageProcessor {
                 break;
             case AWAITING_DESTINATION_CITY:
                 routeHandler.handleDestinationCity(message, absSender);
+                break;
+            case AWAITING_ARRIVAL_DATE_RESPONSE:
+                dateHandler.handleArrivalDate(message, absSender);
+                break;
+            case AWAITING_DEPARTURE_DATE_RESPONSE:
+                dateHandler.handleDepartureDate(message, absSender);
                 break;
             default:
                 // Для других состояний или когда состояние не установлено

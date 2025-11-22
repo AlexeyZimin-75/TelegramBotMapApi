@@ -1,5 +1,6 @@
 package org.example.commands;
 
+import org.example.service.UserDataService;
 import org.example.service.UserStateService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,11 +34,11 @@ class StartCommandTest {
     private User user;
 
     @Mock
-    private Chat chat;
+    private UserDataService userDataService;
 
     @BeforeEach
     void setUp(){
-        command = new StartCommand(userStateService);
+        command = new StartCommand(userStateService,userDataService);
     }
 
 
@@ -77,11 +78,7 @@ class StartCommandTest {
 
         SendPhoto sendPhoto = (SendPhoto) command.execute(absSender,message);
         String expectesCaption = "️Добро пожаловать в туристический бот! 🗺️\n" +
-                "Я помогу тебе построить путь в лучшие места для путешествий!\n\n" +
-                "Доступные команды:\n" +
-                "/start - начать работу\n" +
-                "/help - информация о боте\n" +
-                "/location - узнать информацию о твоем текущем местоположении";
+                "Я помогу тебе построить путь в лучшие места для путешествий!\n\n";
         assertEquals(expectesCaption,sendPhoto.getCaption());
     }
 

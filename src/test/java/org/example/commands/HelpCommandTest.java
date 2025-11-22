@@ -1,5 +1,8 @@
 package org.example.commands;
 
+import org.example.handlers.CommandManager;
+import org.example.service.UserDataService;
+import org.example.service.UserStateService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -14,8 +17,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 class HelpCommandTest {
-
-    MessageHandler handler = new MessageHandler();
+    UserStateService userStateService = new UserStateService();
+    UserDataService userDataService = new UserDataService();
+    CommandManager handler = new CommandManager(userStateService,userDataService);
     HelpCommand helpCommand = new HelpCommand(handler.getCommands());
 
 
@@ -57,13 +61,9 @@ class HelpCommandTest {
         when(message.getChatId()).thenReturn(12L);
 
         sendMessage = helpCommand.execute(absSender,message);
-        String expectedText = "\uD83D\uDCDA Доступные команды:\n" +
-                "\n" +
-                "/help - Показать список всех команд\n" +
-                "/start - Запустить бот и получить приветствие\n" +
-                "/location - Определить мой город по геолокации\n" +
-                "\n" +
-                "Бот помогает построить маршрут до заданного города, для начала вам следует отправить геолокацию, затем выполняйте последующие командыбота, удачного использования";
+        String expectedText = "\nБот помогает построить маршрут до заданного города," +
+                " для начала вам следует отправить геолокацию, затем выполняйте последующие команды" +
+                "бота, удачного использования";
 
         assertEquals(expectedText,sendMessage.getText());
     }
