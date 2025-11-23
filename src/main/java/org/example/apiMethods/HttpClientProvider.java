@@ -1,15 +1,18 @@
 package org.example.apiMethods;
 
-import java.net.http.HttpClient;
-import java.time.Duration;
+import okhttp3.OkHttpClient;
+import java.util.concurrent.TimeUnit;
 
 public class HttpClientProvider {
-    private static final HttpClient CLIENT = HttpClient.newBuilder()
-            .connectTimeout(Duration.ofSeconds(5))
-            .followRedirects(HttpClient.Redirect.NORMAL)
+    private static final OkHttpClient CLIENT = new OkHttpClient.Builder()
+            .connectTimeout(5, TimeUnit.SECONDS)
+            .readTimeout(10, TimeUnit.SECONDS)  // Рекомендуется явно задать
+            .writeTimeout(10, TimeUnit.SECONDS) // Рекомендуется явно задать
+            .followRedirects(true)              // Аналог HttpClient.Redirect.NORMAL
+            .followSslRedirects(true)           // Разрешает редиректы между HTTP/HTTPS
             .build();
 
-    public static HttpClient getClient() {
+    public static OkHttpClient getClient() {
         return CLIENT;
     }
 }

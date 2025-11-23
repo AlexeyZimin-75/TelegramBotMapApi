@@ -1,7 +1,6 @@
 package org.example.apiMethods;
 
 
-import org.example.apiMethods.YandexApi.JsonExtractor;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

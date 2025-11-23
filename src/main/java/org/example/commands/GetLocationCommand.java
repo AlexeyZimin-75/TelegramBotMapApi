@@ -1,7 +1,7 @@
 package org.example.commands;
 
-import org.example.apiMethods.YandexApi.YandexMapsRepository;
-import org.example.apiMethods.YandexApi.YandexMapsService;
+import org.example.apiMethods.YandexMapsAPI.YandexMapsRepository;
+import org.example.apiMethods.YandexMapsAPI.YandexMapsService;
 import org.example.keyboards.LocationKeyboard;
 import org.example.service.UserDataService;
 import org.example.service.UserStateService;
@@ -11,7 +11,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import java.net.http.HttpClient;
+import okhttp3.OkHttpClient;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,17 +20,15 @@ import org.example.apiMethods.*;
 public class GetLocationCommand implements Command {
 
     private final UserStateService userStateService;
-
     private final YandexMapsRepository yandexMapsRepository;
     private final ConfigurationManager configurationManager;
-
     private final Map<String,String> locationTriggers;
 
 
     public GetLocationCommand(UserStateService userStateService, UserDataService userDataService) {
         this.userStateService = userStateService;
 
-        HttpClient httpClient = HttpClientProvider.getClient();
+        OkHttpClient httpClient = HttpClientProvider.getClient(); // ← Теперь возвращает OkHttpClient
         this.yandexMapsRepository = new YandexMapsRepository(httpClient);
         this.configurationManager = ConfigurationManager.getInstance();
 
@@ -55,7 +53,6 @@ public class GetLocationCommand implements Command {
 
         System.out.println("📍 Команда location от пользователя: " + userId);
 
-        // Устанавливаем состояние ожидания геолокации
         userStateService.setUserState(userId, UserState.AWAITING_LOCATION);
 
         SendMessage sendMessage = new SendMessage();
@@ -85,8 +82,6 @@ public class GetLocationCommand implements Command {
         System.out.println("📍 Определен город по координатам " + latitude + ", " + longitude + ": " + city);
         return city;
     }
-
-
 
     public String getCityLandmarks(String city) throws Exception {
         System.out.println("🏛️ Получение достопримечательностей для города: " + city);

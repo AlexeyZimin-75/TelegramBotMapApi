@@ -1,4 +1,6 @@
-package org.example.apiMethods.YandexApi;
+package org.example.apiMethods.YandexMapsAPI;
+
+import org.example.apiMethods.JsonExtractor;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -13,19 +15,21 @@ public class YandexMapsService {
     }
 
     public String getCityName(double latitude, double longitude)
-            throws IOException, InterruptedException, URISyntaxException {
+            throws IOException {
         String geocode = latitude + "," + longitude;
-        return repository.sendGeocodeRequest(geocode, suggestApiKey);
+        String response = repository.sendGeocodeRequest(geocode, suggestApiKey);
+        return JsonExtractor.extractFormattedAddress(response);
     }
 
     public String getCityName(String cityName)
-            throws IOException, InterruptedException, URISyntaxException {
-        return repository.sendGeocodeRequest(cityName, suggestApiKey);
+            throws IOException {
+        String response = repository.sendGeocodeRequest( cityName, suggestApiKey);
+        return JsonExtractor.extractFormattedAddress(response);
     }
 
     public String getLandmarks(String city)
-            throws IOException, InterruptedException, URISyntaxException {
-        String searchText = "Достопримечательности " + city; // Бизнес-логика!
+            throws IOException {
+        String searchText = "Достопримечательности " + city;
         String response = repository.sendSuggestRequest(searchText, suggestApiKey);
         return JsonExtractor.extractLandmarkTexts(response);
     }
