@@ -6,7 +6,6 @@ import okhttp3.Response;
 import okhttp3.HttpUrl;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 
 public class YandexSchedulesRepository {
 
@@ -19,21 +18,18 @@ public class YandexSchedulesRepository {
     public String sendCityCode(String cityName) throws
             IOException {
 
-        // Построение URL с параметрами
         HttpUrl url = HttpUrl.parse("https://suggests.rasp.yandex.net/all_suggests")
                 .newBuilder()
                 .addQueryParameter("format", "old")
                 .addQueryParameter("part", cityName)
                 .build();
 
-        // Создание запроса
         Request request = new Request.Builder()
                 .url(url)
                 .header("Accept", "application/json")
                 .get()
                 .build();
 
-        // Выполнение запроса с автоматическим закрытием Response
         try (Response response = client.newCall(request).execute()) {
             if (!response.isSuccessful()) {
                 throw new RuntimeException("Failed to fetch cityCode: " + response.code());
