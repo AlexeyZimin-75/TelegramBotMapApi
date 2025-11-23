@@ -3,10 +3,6 @@ package org.example.commands.TextCommand;
 import okhttp3.OkHttpClient;
 import org.example.apiMethods.ConfigurationManager;
 import org.example.apiMethods.HttpClientProvider;
-import org.example.apiMethods.KudaGo.Event;
-import org.example.apiMethods.KudaGo.KudaGoClient;
-import org.example.apiMethods.YandexMapsAPI.YandexMapsRepository;
-import org.example.apiMethods.YandexMapsAPI.YandexMapsService;
 import org.example.apiMethods.YandexSchedulesApi.YandexSchedulesRepository;
 import org.example.apiMethods.YandexSchedulesApi.YandexSchedulesService;
 import org.example.service.UserData;
@@ -14,9 +10,7 @@ import org.example.service.UserDataService;
 import org.example.service.UserStateService;
 
 import java.time.LocalDate;
-import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 public class GetBusSchedule {
     private final UserStateService userStateService;
@@ -56,14 +50,12 @@ public class GetBusSchedule {
                     LocalDate.parse(departureDateStr, formatter) :
                     startDate.plusDays(7);
 
-
-//            long startTimestamp = startDate.atStartOfDay(ZoneOffset.UTC).toEpochSecond();
-//            long endTimestamp = endDate.atStartOfDay(ZoneOffset.UTC).toEpochSecond();
-
             String currentCity = userData.getCurrentCity();
             String destinationCity = userData.getDestinationCity();
 
-            return yandexSchedulesService.findBusRoutes(currentCity, destinationCity, startDate);
+            return String.format("Маршрут до пункта назначения: %s \n\n Маршрут обратно: %s",
+                    yandexSchedulesService.findBusRoutes(currentCity, destinationCity, startDate),
+                    yandexSchedulesService.findBusRoutes(destinationCity, currentCity, endDate));
 
         } catch (Exception e) {
             System.err.println("Критическая ошибка в GetBusSchedule: " + e.getMessage());

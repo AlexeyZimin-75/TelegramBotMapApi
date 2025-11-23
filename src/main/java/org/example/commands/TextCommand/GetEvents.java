@@ -114,7 +114,6 @@ public class GetEvents {
         if (cityName == null) return "msk";
 
         switch (cityName.toLowerCase()) {
-            case "москва": return "msk";
             case "санкт-петербург": case "питер": case "спб": return "spb";
             case "новосибирск": return "nsk";
             case "екатеринбург": return "ekb";
@@ -130,6 +129,7 @@ public class GetEvents {
             case "пермь": return "perm";
             case "воронеж": return "vor";
             case "волгоград": return "vlg";
+            case "тюмень": return "tmn";
             default: return "msk";
         }
     }

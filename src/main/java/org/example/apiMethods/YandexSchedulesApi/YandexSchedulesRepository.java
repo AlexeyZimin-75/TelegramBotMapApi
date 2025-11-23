@@ -46,7 +46,7 @@ public class YandexSchedulesRepository {
                 .host("api.rasp.yandex.net")
                 .addPathSegment("v3.0")
                 .addPathSegment("search")
-                .addEncodedPathSegment("") // Последний слэш в пути
+                .addEncodedPathSegment("")
                 .addQueryParameter("apikey", apiKey)
                 .addQueryParameter("format", "json")
                 .addQueryParameter("from", fromCode)

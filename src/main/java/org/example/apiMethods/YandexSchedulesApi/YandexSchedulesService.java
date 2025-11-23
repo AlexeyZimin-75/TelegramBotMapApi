@@ -23,17 +23,24 @@ public class YandexSchedulesService {
         String arrivalCityJson = repository.sendCityCode(arrivalCity);
         String arrivalCode = parseCityCode(arrivalCityJson);
 
-        String scheduleJson = repository.getSchedule(
-                departureCode,
-                arrivalCode,
-                date.toString(),
-                suggestApiKey
-        );
+        String scheduleJson;
+        if (departureCode != null && arrivalCode != null) {
+            scheduleJson = repository.getSchedule(
+                    departureCode,
+                    arrivalCode,
+                    date.toString(),
+                    suggestApiKey
+            );
+        }
+
+        else{
+            return "Возможно вы ввели неправильное название населенного пункта или его не существует в базе";
+        }
 
         return JsonExtractor.extractBusShedules(scheduleJson);
     }
 
-    private String parseCityCode(String json) {
+    public String parseCityCode(String json) {
         return JsonExtractor.extractFirstBusStationCode(json);
     }
 }
