@@ -11,16 +11,19 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import org.example.DataBaseManager;
 
 public class RouteHandler {
     private final UserStateService userStateService;
     private final UserDataService userDataService;
     private final GetLocationCommand getLocationCommand;
+    private final DataBaseManager dataBaseManager;
 
     public RouteHandler(UserStateService userStateService, UserDataService userDataService) {
         this.userStateService = userStateService;
         this.userDataService = userDataService;
         this.getLocationCommand = new GetLocationCommand(userStateService, userDataService);
+        this.dataBaseManager = new DataBaseManager();
     }
 
     public void handleDestinationCity(Message message, AbsSender absSender) {
@@ -65,6 +68,14 @@ public class RouteHandler {
         System.out.println("   - destinationCity: " + userData.getDestinationCity());
         System.out.println("   - departureDate: " + userData.getDepartureDate());
         System.out.println("   - arrivalDate: " + userData.getArrivalDate());
+
+        try {
+            dataBaseManager.saveUser(userId); // Сохраняем пользователя если его нет
+            dataBaseManager.saveRoute(userId, userData); // Сохраняем маршрут
+            System.out.println("💾 Маршрут сохранен в базу данных для пользователя: " + userId);
+        } catch (Exception e) {
+            System.err.println("❌ Ошибка при сохранении маршрута в БД: " + e.getMessage());
+        }
 
         try {
             String currentCity = userData.getCurrentCity();
@@ -135,6 +146,7 @@ public class RouteHandler {
                 currentCity, destinationCity, departureDate, arrivalDate, destinationCity
         );
     }
+
 
     private void sendMessageWithKeyboard(Long chatId, String text, AbsSender absSender) {
         SendMessage response = new SendMessage();

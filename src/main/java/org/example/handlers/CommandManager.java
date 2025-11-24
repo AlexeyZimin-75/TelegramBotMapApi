@@ -7,6 +7,7 @@ import org.example.commands.GetLocationCommand;
 import org.example.commands.GetDateOfStartCommand;
 import org.example.commands.GetDateOfEndCommand;
 import org.example.service.UserStateService;
+import org.example.commands.UserHistoryCommand;
 import org.example.service.UserDataService;
 
 import java.util.HashMap;
@@ -32,6 +33,7 @@ public class CommandManager {
         GetLocationCommand getLocationCommand = new GetLocationCommand(userStateService, userDataService);
         GetDateOfStartCommand dateOfStartCommand = new GetDateOfStartCommand(userStateService, userDataService);
         GetDateOfEndCommand dateOfEndCommand = new GetDateOfEndCommand(userStateService, userDataService);
+        UserHistoryCommand historyCommand = new UserHistoryCommand();
 
         // Регистрируем команды
         commands.put(startCommand.getCommandName(), startCommand);
@@ -39,11 +41,14 @@ public class CommandManager {
         commands.put(getLocationCommand.getCommandName(), getLocationCommand);
         commands.put(dateOfStartCommand.getCommandName(), dateOfStartCommand);
         commands.put(dateOfEndCommand.getCommandName(), dateOfEndCommand);
+        commands.put(historyCommand.getCommandName(), historyCommand);
+
 
         // Собираем триггеры для быстрого доступа
         commandTriggers.putAll(getLocationCommand.getLocationTriggers());
         commandTriggers.putAll(helpCommand.getHelpTriggers());
         commandTriggers.putAll(startCommand.getStartTriggers());
+        commandTriggers.put("📊 Мои маршруты", "history");
 
         System.out.println("✅ Зарегистрированы команды: " + commands.keySet());
         System.out.println("✅ Зарегистрированы триггеры: " + commandTriggers.keySet());

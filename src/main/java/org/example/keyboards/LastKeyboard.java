@@ -16,12 +16,14 @@ public class LastKeyboard {
 
         List<KeyboardRow> buttons = new ArrayList<>();
         KeyboardButton startLocationButton = new KeyboardButton("🗺️ Построить новый маршрут");
+        KeyboardButton myRoutesButton = new KeyboardButton("📊 Мои маршруты");
         KeyboardButton getHelpButton = new KeyboardButton("🤖 Что умеет наш бот");
 
 
 
         KeyboardRow row2 = new KeyboardRow();
         row2.add(startLocationButton);
+        row2.add(myRoutesButton);
         buttons.add(row2);
 
         KeyboardRow row3 = new KeyboardRow();

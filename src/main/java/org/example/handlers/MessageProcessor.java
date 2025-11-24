@@ -50,9 +50,9 @@ public class MessageProcessor {
         String text = message.getText();
         Long userId = message.getFrom().getId();
 
-        String normalizedText = normalizeText(text);
-
-        if (commandManager.isCommand(normalizedText)) {
+        // Сначала проверяем, является ли оригинальный текст командой/триггером
+        if (commandManager.isCommand(text)) {
+            String normalizedText = normalizeText(text);
             executeCommand(normalizedText, message, absSender);
         } else {
             handleUserState(message, absSender);
@@ -60,8 +60,22 @@ public class MessageProcessor {
     }
 
     private String normalizeText(String text) {
+        if (text == null) return "";
+
+        // Сначала проверяем триггеры как есть
         String commandFromTrigger = commandManager.getCommandByTrigger(text);
-        return commandFromTrigger != null ? commandFromTrigger : text;
+        if (commandFromTrigger != null) {
+            return commandFromTrigger;
+        }
+
+        // Затем проверяем в нижнем регистре
+        commandFromTrigger = commandManager.getCommandByTrigger(text.toLowerCase());
+        if (commandFromTrigger != null) {
+            return commandFromTrigger;
+        }
+
+        // Если не нашли в триггерах, возвращаем оригинальный текст
+        return text;
     }
 
     private void executeCommand(String text, Message message, AbsSender absSender) {

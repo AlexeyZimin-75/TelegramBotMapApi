@@ -68,18 +68,18 @@ public class DateHandler {
         }
     }
 
-    private boolean isValidDate(String dateStr) {
+     boolean isValidDate(String dateStr) {
         try {
             LocalDate date = LocalDate.parse(dateStr, dateFormatter);
             // Проверяем, что дата не в прошлом
             LocalDate today = LocalDate.now();
-            return !date.isBefore(today.minusDays(1)); // Разрешаем сегодняшнюю дату
+            return !date.isBefore(today); // Разрешаем сегодняшнюю дату
         } catch (DateTimeParseException e) {
             return false;
         }
     }
 
-    private boolean areDatesValid(Long userId) {
+     boolean areDatesValid(Long userId) {
         UserData userData = userDataService.getUserData(userId);
         try {
             LocalDate departure = LocalDate.parse(userData.getDepartureDate(), dateFormatter);

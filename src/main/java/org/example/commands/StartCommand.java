@@ -14,6 +14,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import org.example.service.UserDataService;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import org.example.DataBaseManager;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,10 +26,12 @@ public class StartCommand implements Command {
     private final UserStateService userStateService;
     private final UserDataService userDataService;
     private  Map<String,String> startTriggers;
+    private final DataBaseManager dataBaseManager;
 
     public StartCommand(UserStateService userStateService, UserDataService userDataService) {
         this.userStateService = userStateService;
         this.userDataService = userDataService;
+        this.dataBaseManager = new DataBaseManager();
         startTriggers = new HashMap<>();
         startTriggers.put("🗺️ Построить новый маршрут","/start");
     }
@@ -46,6 +49,7 @@ public class StartCommand implements Command {
     @Override
     public SendPhoto execute(AbsSender absSender, Message message) {
         Long userId = message.getFrom().getId();
+        dataBaseManager.saveUser(userId);
 
         userStateService.clearUserData(userId);
         userStateService.setUserState(userId, UserState.AWAITING_LOCATION);

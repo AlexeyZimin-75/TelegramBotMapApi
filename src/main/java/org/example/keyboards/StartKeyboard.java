@@ -16,6 +16,7 @@ public class StartKeyboard {
 
         List<KeyboardRow> buttons = new ArrayList<>();
         KeyboardButton startLocationButton = new KeyboardButton("🗺️ Построить новый маршрут");
+        KeyboardButton myRoutesButton = new KeyboardButton("📊 Мои маршруты");
         KeyboardButton getLocationButton = new KeyboardButton("\uD83C\uDF0D Проложить маршрут");
         KeyboardButton getHelpButton = new KeyboardButton("🤖 Что умеет наш бот");
 
@@ -23,6 +24,7 @@ public class StartKeyboard {
 
         KeyboardRow row1 = new KeyboardRow();
         row1.add(getLocationButton);
+        row1.add(myRoutesButton);
         buttons.add(row1);
 
         KeyboardRow row2 = new KeyboardRow();
