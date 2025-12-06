@@ -87,6 +87,7 @@ public class RouteHandler {
 
             String fullMessage = routeInfo + "\n\n" + eventsInfo + "\n\n" + scheduleInfo;
             sendMessageWithKeyboard(chatId, fullMessage, absSender);
+
         } catch (Exception e) {
             System.err.println("❌ Ошибка при получении достопримечательностей: " + e.getMessage());
             // Отправляем сообщение без достопримечательностей
