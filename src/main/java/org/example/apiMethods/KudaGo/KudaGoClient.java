@@ -107,7 +107,7 @@ public class KudaGoClient {
      */
     public List<Event> returnEvents(String citySlug, String fromDate, String toDate) {
         try {
-            EventsResponse response = findEvents(citySlug, fromDate, toDate, 15);
+            EventsResponse response = findEvents(citySlug, fromDate, toDate, 10);
             return response.getResults();
         } catch (Exception e) {
             System.err.println("❌ Ошибка при поиске мероприятий: " + e.getMessage());

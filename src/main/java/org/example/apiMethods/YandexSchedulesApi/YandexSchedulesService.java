@@ -3,7 +3,6 @@ package org.example.apiMethods.YandexSchedulesApi;
 import org.example.apiMethods.JsonExtractor;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.time.LocalDate;
 
 public class YandexSchedulesService {
@@ -16,30 +15,32 @@ public class YandexSchedulesService {
     }
 
     public String findBusRoutes(String departureCity, String arrivalCity, LocalDate date)
-            throws IOException, InterruptedException, URISyntaxException {
+            throws IOException{
 
-        // Шаг 1: Получить код города отправления
         String departureCityJson = repository.sendCityCode(departureCity);
-        String departureCode = parseCityCode(departureCityJson); // Бизнес-логика парсинга
+        String departureCode = parseCityCode(departureCityJson);
 
-        // Шаг 2: Получить код города прибытия
         String arrivalCityJson = repository.sendCityCode(arrivalCity);
-        String arrivalCode = parseCityCode(arrivalCityJson); // Бизнес-логика парсинга
+        String arrivalCode = parseCityCode(arrivalCityJson);
 
-        // Шаг 3: Запросить расписание
-        String scheduleJson = repository.getSchedule(
-                departureCode,
-                arrivalCode,
-                date.toString(),
-                suggestApiKey
-        );
+        String scheduleJson;
+        if (departureCode != null && arrivalCode != null) {
+            scheduleJson = repository.getSchedule(
+                    departureCode,
+                    arrivalCode,
+                    date.toString(),
+                    suggestApiKey
+            );
+        }
 
-        // Шаг 4: Парсинг и формирование результата
-        return JsonExtractor.extractBusShedules(scheduleJson); // Бизнес-логика обработки
+        else{
+            return "Возможно вы ввели неправильное название населенного пункта или его не существует в базе";
+        }
+
+        return JsonExtractor.extractBusShedules(scheduleJson);
     }
 
-    private String parseCityCode(String json) {
-        // Логика парсинга для получения кода станции (например, "s9623439")
-        return JsonExtractor.extractBusShedules(json);
+    public String parseCityCode(String json) {
+        return JsonExtractor.extractFirstBusStationCode(json);
     }
 }

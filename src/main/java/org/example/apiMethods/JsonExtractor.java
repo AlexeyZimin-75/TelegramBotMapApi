@@ -131,10 +131,6 @@ public class JsonExtractor {
         }
     }
 
-    public static String extractCityCode(String json) {
-        return null;
-    }
-
     public static String extractBusShedules(String json) {
 
         JsonObject root = JsonParser.parseString(json).getAsJsonObject();
@@ -144,46 +140,50 @@ public class JsonExtractor {
             return "Рейсов не найдено";
         }
 
-        JsonObject segment = segments.get(1).getAsJsonObject();
+        for (int i = 0; i < segments.size(); i++) {
+            JsonObject segment = segments.get(i).getAsJsonObject();
 
-        // Извлекаем данные
-        String from = segment.getAsJsonObject("from")
-                .get("title").getAsString();
-        String to = segment.getAsJsonObject("to")
-                .get("title").getAsString();
+            String from = segment.getAsJsonObject("from")
+                    .get("title").getAsString();
+            String to = segment.getAsJsonObject("to")
+                    .get("title").getAsString();
 
-        // Парсим даты
-        OffsetDateTime departure = OffsetDateTime.parse(
-                segment.get("departure").getAsString()
-        );
-        OffsetDateTime arrival = OffsetDateTime.parse(
-                segment.get("arrival").getAsString()
-        );
+            OffsetDateTime departure = OffsetDateTime.parse(
+                    segment.get("departure").getAsString()
+            );
+            OffsetDateTime arrival = OffsetDateTime.parse(
+                    segment.get("arrival").getAsString()
+            );
 
-        String carrier = segment.getAsJsonObject("thread")
-                .getAsJsonObject("carrier")
-                .get("title").getAsString();
+            String carrier = segment.getAsJsonObject("thread")
+                    .getAsJsonObject("carrier")
+                    .get("title").getAsString();
 
-        int price = segment.getAsJsonObject("tickets_info")
-                .getAsJsonArray("places")
-                .get(0).getAsJsonObject()
-                .getAsJsonObject("price")
-                .get("whole").getAsInt();
-
-        return String.format(
-                "Рейс: %s → %s\nОтправление: %s\nПрибытие: %s\nПеревозчик: %s\nЦена: %d руб.",
-                from, to,
-                departure.format(DateTimeFormatter.ofPattern("dd.MM HH:mm")),
-                arrival.format(DateTimeFormatter.ofPattern("dd.MM HH:mm")),
-                carrier, price
-        );
+            int price;
+            if (segment.has("tickets_info") && !segment.get("tickets_info").isJsonNull()) {
+                price = segment.getAsJsonObject("tickets_info")
+                        .getAsJsonArray("places")
+                        .get(0).getAsJsonObject()
+                        .getAsJsonObject("price")
+                        .get("whole").getAsInt();
+            } else {
+                continue;
+            }
+            return String.format(
+                    "Рейс: %s -> %s\nОтправление: %s\nПрибытие: %s\nПеревозчик: %s\nЦена: %d руб.",
+                    from, to,
+                    departure.format(DateTimeFormatter.ofPattern("dd.MM HH:mm")),
+                    arrival.format(DateTimeFormatter.ofPattern("dd.MM HH:mm")),
+                    carrier, price
+            );
+        }
+        return "Рейсов нет";
     }
 
     public static List<String> extractBusStationCodes(String json) {
         Gson gson = new Gson();
         List<String> stationCodes = new ArrayList<>();
 
-        // Парсим главный массив
         JsonArray mainArray = gson.fromJson(json, JsonArray.class);
 
         if (mainArray.size() < 2) {
@@ -223,48 +223,4 @@ public class JsonExtractor {
         List<String> codes = extractBusStationCodes(json);
         return codes.isEmpty() ? null : codes.get(0);
     }
-
-    public String extractFirstRoute(String json) {
-        JsonObject root = JsonParser.parseString(json).getAsJsonObject();
-        JsonArray segments = root.getAsJsonArray("segments");
-
-        if (segments.size() == 0) {
-            return "Рейсов не найдено";
-        }
-
-        JsonObject segment = segments.get(0).getAsJsonObject();
-
-        // Извлекаем данные
-        String from = segment.getAsJsonObject("from")
-                .get("title").getAsString();
-        String to = segment.getAsJsonObject("to")
-                .get("title").getAsString();
-
-        // Парсим даты
-        OffsetDateTime departure = OffsetDateTime.parse(
-                segment.get("departure").getAsString()
-        );
-        OffsetDateTime arrival = OffsetDateTime.parse(
-                segment.get("arrival").getAsString()
-        );
-
-        String carrier = segment.getAsJsonObject("thread")
-                .getAsJsonObject("carrier")
-                .get("title").getAsString();
-
-        int price = segment.getAsJsonObject("tickets_info")
-                .getAsJsonArray("places")
-                .get(0).getAsJsonObject()
-                .getAsJsonObject("price")
-                .get("whole").getAsInt();
-
-        return String.format(
-                "Рейс: %s → %s\nОтправление: %s\nПрибытие: %s\nПеревозчик: %s\nЦена: %d руб.",
-                from, to,
-                departure.format(DateTimeFormatter.ofPattern("dd.MM HH:mm")),
-                arrival.format(DateTimeFormatter.ofPattern("dd.MM HH:mm")),
-                carrier, price
-        );
-    }
-
 }

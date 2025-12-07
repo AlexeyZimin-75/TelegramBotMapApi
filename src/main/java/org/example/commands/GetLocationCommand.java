@@ -28,7 +28,7 @@ public class GetLocationCommand implements Command {
     public GetLocationCommand(UserStateService userStateService, UserDataService userDataService) {
         this.userStateService = userStateService;
 
-        OkHttpClient httpClient = HttpClientProvider.getClient(); // ← Теперь возвращает OkHttpClient
+        OkHttpClient httpClient = HttpClientProvider.getClient();
         this.yandexMapsRepository = new YandexMapsRepository(httpClient);
         this.configurationManager = ConfigurationManager.getInstance();
 

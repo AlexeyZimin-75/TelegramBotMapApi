@@ -3,7 +3,6 @@ package org.example.apiMethods.YandexMapsAPI;
 import org.example.apiMethods.JsonExtractor;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 
 public class YandexMapsService {
     private final YandexMapsRepository repository;

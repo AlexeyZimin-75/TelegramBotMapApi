@@ -1,5 +1,9 @@
 package org.example;
 
+import okhttp3.OkHttpClient;
+import org.example.apiMethods.ConfigurationManager;
+import org.example.apiMethods.HttpClientProvider;
+import org.example.apiMethods.YandexMapsAPI.YandexMapsRepository;
 import org.example.handlers.MessageProcessor;
 import org.example.service.UserStateService;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -14,8 +18,10 @@ public class Bot extends TelegramLongPollingBot {
     private final String BOT_USERNAME;
 
     public Bot() {
+
         this.BOT_TOKEN = loadTokenFromConfig();
         this.BOT_USERNAME = loadUsernameFromConfig();
+
         this.messageProcessor = new MessageProcessor(new UserStateService());
     }
 
@@ -55,4 +61,5 @@ public class Bot extends TelegramLongPollingBot {
     public String getBotToken() {
         return BOT_TOKEN;
     }
+
 }

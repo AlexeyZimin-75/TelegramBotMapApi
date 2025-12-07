@@ -1,5 +1,6 @@
 package org.example.handlers;
 
+import org.example.commands.TextCommand.GetBusSchedule;
 import org.example.commands.TextCommand.GetEvents;
 import org.example.commands.GetLocationCommand;
 import org.example.keyboards.LastKeyboard;
@@ -61,6 +62,7 @@ public class RouteHandler {
     public void sendFinalRouteInfo(Long userId, Long chatId, AbsSender absSender) {
         UserData userData = userDataService.getUserData(userId);
         GetEvents getEvents = new GetEvents(userStateService,userDataService);
+        GetBusSchedule getBusSchedule = new GetBusSchedule(userStateService, userDataService);
 
         // Логируем все данные перед отправкой
         System.out.println("📊 ФИНАЛЬНЫЕ ДАННЫЕ ПОЛЬЗОВАТЕЛЯ:");
@@ -92,9 +94,11 @@ public class RouteHandler {
             String landmarks = getLocationCommand.getCityLandmarks(destinationCity);
             String routeInfo = buildFinalRouteMessage(currentCity, destinationCity, departureDate, arrivalDate, landmarks);
             String eventsInfo = getEvents.execute(userId);
+            String scheduleInfo = getBusSchedule.execute(userId);
 
-            String fullMessage = routeInfo + "\n\n" + eventsInfo;
+            String fullMessage = routeInfo + "\n\n" + eventsInfo + "\n\n" + scheduleInfo;
             sendMessageWithKeyboard(chatId, fullMessage, absSender);
+
         } catch (Exception e) {
             System.err.println("❌ Ошибка при получении достопримечательностей: " + e.getMessage());
             // Отправляем сообщение без достопримечательностей
