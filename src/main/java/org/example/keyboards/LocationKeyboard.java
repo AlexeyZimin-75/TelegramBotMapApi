@@ -11,7 +11,7 @@ public class LocationKeyboard {
         ReplyKeyboardMarkup keyboard = new ReplyKeyboardMarkup();
         keyboard.setResizeKeyboard(true);
         keyboard.setOneTimeKeyboard(true);
-        keyboard.setSelective(true);
+
 
         List<KeyboardRow> buttons = new ArrayList<>();
         KeyboardButton autoLocationButton = new KeyboardButton("📍 Отправить локацию");
