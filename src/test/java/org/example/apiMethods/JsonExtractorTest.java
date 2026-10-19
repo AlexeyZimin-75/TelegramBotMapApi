@@ -44,7 +44,7 @@ class JsonExtractorTest {
     }
 
     //Для extractFormattedAddress
-
+    @Test
     void testNoFeatureMember() {
         String jsonNoFeature = "{\"response\": {\"GeoObjectCollection\": {}}}";
         assertEquals("", JsonExtractor.extractFormattedAddress(jsonNoFeature));

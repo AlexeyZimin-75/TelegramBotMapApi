@@ -1,16 +1,18 @@
 package org.example.apiMethods;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
+
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class JsonExtractor {
     private JsonExtractor() {
     }
 
     //Метод для получения достопримечательностей
-    //Вычисляет есть ли в tags "landmark" и если есть, то добавляет этот объект
+    //вычисляет есть ли в tags "landmark" и если есть, то добавляет этот объект
     public static String extractLandmarkTexts(String json) {
         if (json == null || json.isBlank()) {
             return "";
@@ -57,7 +59,7 @@ public class JsonExtractor {
     }
 
 
-    //Метод для получения города из координат
+//    Метод для получения города из координат
     public static String extractFormattedAddress(String json) {
         if (json == null || json.isBlank()) return "";
         JsonElement rootEl;
@@ -127,5 +129,98 @@ public class JsonExtractor {
         } catch (Exception e) {
             return "";
         }
+    }
+
+    public static String extractBusShedules(String json) {
+
+        JsonObject root = JsonParser.parseString(json).getAsJsonObject();
+        JsonArray segments = root.getAsJsonArray("segments");
+
+        if (segments.size() == 0) {
+            return "Рейсов не найдено";
+        }
+
+        for (int i = 0; i < segments.size(); i++) {
+            JsonObject segment = segments.get(i).getAsJsonObject();
+
+            String from = segment.getAsJsonObject("from")
+                    .get("title").getAsString();
+            String to = segment.getAsJsonObject("to")
+                    .get("title").getAsString();
+
+            OffsetDateTime departure = OffsetDateTime.parse(
+                    segment.get("departure").getAsString()
+            );
+            OffsetDateTime arrival = OffsetDateTime.parse(
+                    segment.get("arrival").getAsString()
+            );
+
+            String carrier = segment.getAsJsonObject("thread")
+                    .getAsJsonObject("carrier")
+                    .get("title").getAsString();
+
+            int price;
+            if (segment.has("tickets_info") && !segment.get("tickets_info").isJsonNull()) {
+                price = segment.getAsJsonObject("tickets_info")
+                        .getAsJsonArray("places")
+                        .get(0).getAsJsonObject()
+                        .getAsJsonObject("price")
+                        .get("whole").getAsInt();
+            } else {
+                continue;
+            }
+            return String.format(
+                    "Рейс: %s -> %s\nОтправление: %s\nПрибытие: %s\nПеревозчик: %s\nЦена: %d руб.",
+                    from, to,
+                    departure.format(DateTimeFormatter.ofPattern("dd.MM HH:mm")),
+                    arrival.format(DateTimeFormatter.ofPattern("dd.MM HH:mm")),
+                    carrier, price
+            );
+        }
+        return "Рейсов нет";
+    }
+
+    public static List<String> extractBusStationCodes(String json) {
+        Gson gson = new Gson();
+        List<String> stationCodes = new ArrayList<>();
+
+        JsonArray mainArray = gson.fromJson(json, JsonArray.class);
+
+        if (mainArray.size() < 2) {
+            return stationCodes;
+        }
+
+        JsonElement secondElement = mainArray.get(1);
+        if (!secondElement.isJsonArray()) {
+            return stationCodes;
+        }
+
+        JsonArray stations = secondElement.getAsJsonArray();
+
+        for (JsonElement stationElement : stations) {
+            if (!stationElement.isJsonArray()) {
+                continue;
+            }
+
+            JsonArray station = stationElement.getAsJsonArray();
+
+            if (station.size() < 3) {
+                continue;
+            }
+
+            String description = station.get(2).getAsString();
+
+            if (description.contains("авт.")) {
+                String stationCode = station.get(0).getAsString();
+                stationCodes.add(stationCode);
+            }
+        }
+
+        return stationCodes;
+    }
+
+    public static String extractFirstBusStationCode(String json) {
+        List<String> codes = extractBusStationCodes(json);
+        return codes.isEmpty() ? null : codes.get(0);
     }
 }
